@@ -93,14 +93,14 @@ footer{font-size:11px;color:var(--muted);padding:24px 0 0;display:flex;flex-wrap
     <input id="search" type="search" placeholder="기업, 직무, 지역 검색" autocomplete="off" spellcheck="false" aria-controls="results">
   </div>
   <div class="filter-row">
-    <label class="field" for="tier"><span>등급</span><select id="tier" aria-controls="results"><option value="">전체 등급</option></select></label>
+    <label class="field" for="tier"><span>회사 우선순위</span><select id="tier" aria-controls="results"><option value="">전체 순위</option></select></label>
     <label class="field" for="category"><span>분야</span><select id="category" aria-controls="results"><option value="">전체 분야</option></select></label>
     <button type="button" id="reset">초기화</button>
   </div>
 </section>
 <section aria-labelledby="results-heading">
   <div class="results-bar"><h2 id="results-heading" class="count"><span id="result-count" aria-live="polite" aria-atomic="true">공고를 불러오는 중</span></h2><div class="sort-group" role="group" aria-label="공고 정렬"><button type="button" id="sort-score" aria-pressed="true">점수순</button><button type="button" id="sort-deadline" aria-pressed="false">마감순</button></div></div>
-  <p class="sort-note">S등급 우선 · 마감된 공고는 맨 아래에 표시됩니다.</p>
+  <p class="sort-note">1순위 회사 우선 · 마감된 공고는 맨 아래에 표시됩니다.</p>
   <ul id="results" class="job-grid"></ul>
   <div id="empty" class="message" hidden><h2>검색 결과가 없습니다</h2><p id="empty-description">검색어나 필터를 바꿔 보세요.</p></div>
   <div id="error" class="message error" role="alert" hidden><h2>공고를 불러오지 못했습니다</h2><p>잠시 후 페이지를 새로고침해 주세요.</p></div>
@@ -115,6 +115,7 @@ footer{font-size:11px;color:var(--muted);padding:24px 0 0;display:flex;flex-wrap
   const DAY = 86400000;
   const KST = 9 * 3600000;
   const text = value => typeof value === 'string' ? value.trim() : '';
+  const tierLabel = value => ({S:'1순위',A:'2순위',B:'3순위'}[text(value).toUpperCase()] || '순위 확인필요');
   function deadlineInfo(value, now = Date.now()) {
     const raw = text(value);
     const unknown = {expired: false, label: raw.includes('상시') ? '상시' : '마감일 확인', sortAt: Infinity};
@@ -204,7 +205,7 @@ footer{font-size:11px;color:var(--muted);padding:24px 0 0;display:flex;flex-wrap
       ['category', [...new Set(jobs.map(value => value.category))].sort((a, b) => a.localeCompare(b, 'ko'))]
     ]) {
       for (const value of values) {
-        const option = make('option', '', id === 'tier' ? value + '등급' : value);
+        const option = make('option', '', id === 'tier' ? tierLabel(value) : value);
         option.value = value;
         get(id).append(option);
       }
@@ -214,7 +215,7 @@ footer{font-size:11px;color:var(--muted);padding:24px 0 0;display:flex;flex-wrap
       const item = make('li', 'job' + (info.expired ? ' expired' : ''));
       const top = make('div', 'card-top');
       top.append(make('span', 'company', value.company));
-      if (value.tier) top.append(make('span', 'tier' + (value.tier === 'S' ? ' tier-s' : ''), value.tier));
+      top.append(make('span', 'tier' + (value.tier === 'S' ? ' tier-s' : ''), tierLabel(value.tier)));
       const score = make('span', 'score', value.score === null ? '점수 미정' : String(value.score));
       score.setAttribute('aria-label', value.score === null ? '점수 미정' : '점수 ' + value.score + '점');
       if (value.score !== null) score.append(make('small', '', '점'));
@@ -269,7 +270,7 @@ footer{font-size:11px;color:var(--muted);padding:24px 0 0;display:flex;flex-wrap
     render();
     return {render};
   }
-  const api = {deadlineInfo, safeURL, normalizeJobs, readJobs, selectJobs, mount};
+  const api = {tierLabel, deadlineInfo, safeURL, normalizeJobs, readJobs, selectJobs, mount};
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (typeof document !== 'undefined') mount(document);
 })();
