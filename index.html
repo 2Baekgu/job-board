@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>채용 공고</title>
+<meta name="color-scheme" content="light">
+<style>
+:root{--paper:#f6f7f4;--surface:#fff;--ink:#202a25;--muted:#64716a;--line:#dde3dd;--accent:#185b40;--tint:#edf5ee;--radius:14px}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit;color:inherit}
+button,input,select,.visit{min-height:44px}
+button,.visit{min-width:44px}
+button,select{cursor:pointer}
+button{background:none;border:0}
+a{color:inherit}
+[hidden]{display:none!important}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.skip{position:absolute;left:16px;top:-100px;background:var(--surface);padding:12px;z-index:5}
+.skip:focus{top:12px}
+.wrap{width:min(1080px,100%);margin:auto;padding:0 20px}
+.masthead{border-bottom:1px solid var(--line);background:var(--surface)}
+.masthead .wrap{height:64px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.wordmark{font-family:"SFMono-Regular",Consolas,monospace;font-size:14px;font-weight:700;letter-spacing:.09em}
+.wordmark::before{content:"";display:inline-block;width:8px;height:8px;background:var(--accent);margin-right:10px}
+.section-label{color:var(--muted);font-size:12px;letter-spacing:.1em}
+main{padding-top:28px!important;padding-bottom:44px!important}
+.intro{margin-bottom:22px}
+h1{font-size:28px;line-height:1.25;letter-spacing:-.05em;margin:0 0 8px;font-weight:750}
+.intro p{margin:0;color:var(--muted);font-size:13px}
+.filters{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px;display:grid;gap:12px}
+.search-field{position:relative}
+.search-field svg{position:absolute;left:14px;top:15px;width:18px;height:18px;pointer-events:none;color:var(--muted)}
+#search{width:100%;min-width:0;height:48px;border:1px solid var(--line);border-radius:9px;padding:10px 14px 10px 42px;background:var(--paper);font-size:16px}
+#search::placeholder{color:#6c7870}
+.filter-row{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end}
+.field{min-width:0;display:grid;gap:4px}
+.field>span{font-size:11px;color:var(--muted);font-weight:600}
+select{width:100%;min-width:0;padding:8px 27px 8px 11px;border:1px solid var(--line);border-radius:8px;background:var(--surface);font-size:13px;text-overflow:ellipsis}
+#reset{padding:8px 2px;font-size:12px;color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+.results-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:22px 0 12px}
+.count{margin:0;font-size:14px;font-weight:650;font-variant-numeric:tabular-nums}
+.sort-group{display:flex;gap:2px;background:#e9ede7;padding:3px;border-radius:9px}
+.sort-group button{padding:8px 12px;border-radius:6px;font-size:12px;min-height:44px;color:#56635b}
+.sort-group button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px #202a2512;font-weight:700}
+.sort-note{margin:0 0 14px;color:var(--muted);font-size:11px}
+.job-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;list-style:none;margin:0;padding:0}
+.job{min-width:0;border:1px solid var(--line);background:var(--surface);border-radius:var(--radius);padding:18px;display:flex;flex-direction:column}
+.card-top{display:flex;align-items:center;gap:8px;min-width:0}
+.company{font-size:13px;font-weight:700;overflow-wrap:anywhere}
+.tier{font-family:Consolas,monospace;font-size:11px;line-height:22px;padding:0 7px;border:1px solid var(--line);border-radius:5px;color:var(--muted);flex:none}
+.tier-s{background:var(--tint);border-color:#c8ddce;color:var(--accent);font-weight:700}
+.score{margin-left:auto;white-space:nowrap;font-variant-numeric:tabular-nums;font-size:14px;font-weight:700}
+.score small{font-size:10px;color:var(--muted);font-weight:400;margin-left:2px}
+.job h2{font-size:18px;line-height:1.45;letter-spacing:-.035em;margin:12px 0 9px;overflow-wrap:anywhere;font-weight:700}
+.meta{display:flex;flex-wrap:wrap;gap:3px 10px;color:var(--muted);font-size:12px;margin:0 0 12px;overflow-wrap:anywhere}
+.meta span+span::before{content:"·";margin-right:10px;color:#87938a}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.tag{font-size:11px;background:var(--paper);border-radius:5px;padding:3px 7px;color:#506056;overflow-wrap:anywhere}
+.eligibility{background:var(--tint);color:var(--accent)}
+.card-bottom{border-top:1px solid #edf0eb;padding-top:10px;margin-top:auto;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.deadline{min-width:0;display:flex;flex-wrap:wrap;align-items:baseline;gap:3px 7px;overflow-wrap:anywhere}
+.deadline strong{font-family:Consolas,"Malgun Gothic",sans-serif;font-size:13px;color:var(--accent)}
+.deadline time,.deadline .date{font-size:11px;color:var(--muted)}
+.visit{display:inline-flex;align-items:center;justify-content:center;gap:7px;flex:none;font-size:12px;font-weight:650;text-decoration:none;padding:7px 10px;border:1px solid var(--line);border-radius:7px}
+a.visit:hover{background:var(--tint);border-color:#afcbb7}
+.visit.unavailable{color:var(--muted);border-color:transparent;font-weight:400}
+.job.expired{background:#f0f1ef;border-color:#dfe2dd;color:#737b75}
+.job.expired .tier,.job.expired .tag{background:#e6e8e4;color:#68716a;border-color:#d2d7d0}
+.job.expired .deadline strong,.job.expired .score,.job.expired .visit{color:#68716a}
+.job.expired .card-bottom{border-color:#dce0d8}
+.message{border:1px dashed #cbd4ca;border-radius:var(--radius);padding:36px 20px;background:var(--surface);text-align:center}
+.message h2{font-size:17px;margin:0 0 6px}
+.message p{font-size:13px;color:var(--muted);margin:0}
+.error{border-style:solid}
+footer{font-size:11px;color:var(--muted);padding:24px 0 0;display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 16px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(min-width:720px){.wrap{padding:0 32px}.masthead .wrap{height:72px}main{padding-top:36px!important}.intro{margin-bottom:24px}.filters{grid-template-columns:minmax(0,1fr) minmax(340px,.8fr);align-items:end;padding:18px;gap:24px}.job-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.job{padding:22px}.results-bar{margin-top:28px}.intro p{font-size:14px}}
+@media(max-width:359px){.wrap{padding:0 14px}.job{padding:14px}.filter-row{gap:6px}.sort-group button{padding:8px 9px}.deadline{display:block}.deadline time{display:block}}
+@media(prefers-reduced-motion:no-preference){a.visit,button{transition:background-color .15s ease,border-color .15s ease}}
+</style>
+</head>
+<body>
+<a class="skip" href="#results-heading">공고 목록으로 건너뛰기</a>
+<header class="masthead"><div class="wrap"><span class="wordmark">JOB BOARD</span><span class="section-label">EXPLORE</span></div></header>
+<main class="wrap">
+<section class="intro" aria-labelledby="page-title"><h1 id="page-title">채용 공고</h1><p>기업과 직무를 한눈에. 자세한 내용은 공고 원문에서 확인하세요.</p></section>
+<section class="filters" aria-label="공고 검색 및 필터">
+  <div class="search-field">
+    <label for="search" class="sr-only">기업, 직무, 지역 검색</label>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
+    <input id="search" type="search" placeholder="기업, 직무, 지역 검색" autocomplete="off" spellcheck="false" aria-controls="results">
+  </div>
+  <div class="filter-row">
+    <label class="field" for="tier"><span>등급</span><select id="tier" aria-controls="results"><option value="">전체 등급</option></select></label>
+    <label class="field" for="category"><span>분야</span><select id="category" aria-controls="results"><option value="">전체 분야</option></select></label>
+    <button type="button" id="reset">초기화</button>
+  </div>
+</section>
+<section aria-labelledby="results-heading">
+  <div class="results-bar"><h2 id="results-heading" class="count"><span id="result-count" aria-live="polite" aria-atomic="true">공고를 불러오는 중</span></h2><div class="sort-group" role="group" aria-label="공고 정렬"><button type="button" id="sort-score" aria-pressed="true">점수순</button><button type="button" id="sort-deadline" aria-pressed="false">마감순</button></div></div>
+  <p class="sort-note">S등급 우선 · 마감된 공고는 맨 아래에 표시됩니다.</p>
+  <ul id="results" class="job-grid"></ul>
+  <div id="empty" class="message" hidden><h2>검색 결과가 없습니다</h2><p id="empty-description">검색어나 필터를 바꿔 보세요.</p></div>
+  <div id="error" class="message error" role="alert" hidden><h2>공고를 불러오지 못했습니다</h2><p>잠시 후 페이지를 새로고침해 주세요.</p></div>
+</section>
+<noscript><div class="message"><h2>JavaScript를 켜 주세요</h2><p>공고 검색과 정렬에 JavaScript가 필요합니다.</p></div></noscript>
+<footer><span>마감일·D-day는 한국시간(KST) 기준</span><span>공고 원문이 최종 기준입니다.</span></footer>
+</main>
+<script id="jobs-data" type="application/json">[]</script>
+<script id="board-app">
+'use strict';
+(() => {
+  const DAY = 86400000;
+  const KST = 9 * 3600000;
+  const text = value => typeof value === 'string' ? value.trim() : '';
+  function deadlineInfo(value, now = Date.now()) {
+    const raw = text(value);
+    const unknown = {expired: false, label: raw.includes('상시') ? '상시' : '마감일 확인', sortAt: Infinity};
+    const dateOnly = /^\d{4}-\d{2}-\d{2}$/.test(raw);
+    const timestamp = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?(?:Z|[+-]\d{2}:?\d{2})$/i.test(raw);
+    if (!dateOnly && !timestamp) return unknown;
+    const calendar = raw.slice(0, 10);
+    const midnight = Date.parse(calendar + 'T00:00:00Z');
+    if (!Number.isFinite(midnight) || new Date(midnight).toISOString().slice(0, 10) !== calendar) return unknown;
+    const sortAt = dateOnly ? midnight + DAY - KST : Date.parse(raw);
+    if (!Number.isFinite(sortAt)) return unknown;
+    const expired = now >= sortAt;
+    const dateDay = dateOnly ? Math.floor(midnight / DAY) : Math.floor((sortAt + KST) / DAY);
+    const days = dateDay - Math.floor((now + KST) / DAY);
+    return {expired, sortAt, label: expired ? '마감' : days <= 0 ? 'D-day' : 'D-' + days};
+  }
+  function safeURL(value) {
+    const raw = text(value);
+    if (!/^https?:\/\//i.test(raw) || /[\u0000-\u001f\u007f]/.test(raw)) return '';
+    try {
+      const parsed = new URL(raw);
+      return ['http:', 'https:'].includes(parsed.protocol) && !parsed.username && !parsed.password ? parsed.href : '';
+    } catch { return ''; }
+  }
+  function normalizeJobs(values) {
+    if (!Array.isArray(values)) return [];
+    return values.filter(value => value && typeof value === 'object' && !Array.isArray(value)).flatMap(value => {
+      const eligibility = text(value.eligibility);
+      const score = typeof value.score === 'number' || typeof value.score === 'string' ? Number(value.score) : NaN;
+      if (!['가능', '확인필요'].includes(eligibility) || !Number.isFinite(score) || score < 60) return [];
+      return [{
+        company: text(value.company) || '기업명 확인', tier: text(value.tier).toUpperCase(),
+        title: text(value.title) || '공고명 확인', eligibility,
+        location: text(value.location) || '지역 확인', employment_type: text(value.employment_type) || '고용형태 확인',
+        deadline: text(value.deadline), score, category: text(value.category) || '기타', url: safeURL(value.url)
+      }];
+    });
+  }
+  function readJobs(raw) {
+    if (text(raw) === ['<!--', 'PUBLIC_JOBS_JSON', '-->'].join('')) return [];
+    try {
+      const values = JSON.parse(raw);
+      if (!Array.isArray(values)) throw new Error();
+      return normalizeJobs(values);
+    } catch { throw new Error('공고 데이터를 불러오지 못했습니다.'); }
+  }
+  function selectJobs(values, filters = {}, now = Date.now()) {
+    const words = text(filters.query).toLocaleLowerCase('ko').split(/\s+/).filter(Boolean);
+    return normalizeJobs(values).filter(value => {
+      const searchable = [value.company, value.title, value.location, value.category, value.employment_type].join(' ').toLocaleLowerCase('ko');
+      return (!filters.tier || value.tier === filters.tier) && (!filters.category || value.category === filters.category) && words.every(word => searchable.includes(word));
+    }).map(value => ({value, info: deadlineInfo(value.deadline, now)})).sort((a, b) => {
+      if (a.info.expired !== b.info.expired) return a.info.expired ? 1 : -1;
+      if ((a.value.tier === 'S') !== (b.value.tier === 'S')) return a.value.tier === 'S' ? -1 : 1;
+      if (filters.sort === 'deadline' && a.info.sortAt !== b.info.sortAt) return a.info.sortAt < b.info.sortAt ? -1 : 1;
+      return b.value.score - a.value.score || a.value.company.localeCompare(b.value.company, 'ko') || a.value.title.localeCompare(b.value.title, 'ko');
+    }).map(item => item.value);
+  }
+  function mount(doc, clock = () => Date.now()) {
+    const get = id => doc.getElementById(id);
+    const make = (tag, className, content) => {
+      const node = doc.createElement(tag);
+      if (className) node.className = className;
+      if (content !== undefined) node.textContent = content;
+      return node;
+    };
+    let jobs;
+    try { jobs = readJobs(get('jobs-data').textContent); }
+    catch {
+      const render = () => {
+        get('results').replaceChildren();
+        get('result-count').textContent = '공고 확인 불가';
+        get('error').hidden = false;
+        get('empty').hidden = true;
+        for (const id of ['search', 'tier', 'category', 'reset', 'sort-score', 'sort-deadline']) get(id).disabled = true;
+      };
+      render();
+      return {render};
+    }
+    get('empty-description').textContent = jobs.length ? '검색어나 필터를 바꿔 보세요.' : '아직 표시할 공고가 없습니다. 나중에 다시 확인해 주세요.';
+    let sort = 'score';
+    for (const [id, values] of [
+      ['tier', [...new Set(jobs.map(value => value.tier).filter(Boolean))].sort((a, b) => a === 'S' ? -1 : b === 'S' ? 1 : a.localeCompare(b, 'ko'))],
+      ['category', [...new Set(jobs.map(value => value.category))].sort((a, b) => a.localeCompare(b, 'ko'))]
+    ]) {
+      for (const value of values) {
+        const option = make('option', '', id === 'tier' ? value + '등급' : value);
+        option.value = value;
+        get(id).append(option);
+      }
+    }
+    function card(value, now) {
+      const info = deadlineInfo(value.deadline, now);
+      const item = make('li', 'job' + (info.expired ? ' expired' : ''));
+      const top = make('div', 'card-top');
+      top.append(make('span', 'company', value.company));
+      if (value.tier) top.append(make('span', 'tier' + (value.tier === 'S' ? ' tier-s' : ''), value.tier));
+      const score = make('span', 'score', String(value.score));
+      score.setAttribute('aria-label', '점수 ' + value.score + '점');
+      score.append(make('small', '', '점'));
+      top.append(score);
+      const meta = make('p', 'meta');
+      meta.append(make('span', '', value.location), make('span', '', value.employment_type));
+      const tags = make('div', 'tags');
+      tags.append(make('span', 'tag', value.category), make('span', 'tag eligibility', value.eligibility));
+      const bottom = make('div', 'card-bottom');
+      const deadline = make('div', 'deadline');
+      deadline.append(make('strong', '', info.label));
+      if (Number.isFinite(info.sortAt)) {
+        const dateOnly = /^\d{4}-\d{2}-\d{2}$/.test(value.deadline);
+        const formatted = dateOnly ? value.deadline.replaceAll('-', '.') : new Date(info.sortAt + KST).toISOString().slice(0, 16).replace('T', ' ').replaceAll('-', '.') + ' KST';
+        const date = make('time', '', formatted);
+        date.dateTime = value.deadline;
+        deadline.append(date);
+      }
+      const url = safeURL(value.url);
+      const visit = make(url ? 'a' : 'span', 'visit' + (url ? '' : ' unavailable'), url ? '원문 보기 ↗' : '링크 없음');
+      if (url) {
+        visit.href = url;
+        visit.target = '_blank';
+        visit.rel = 'noopener noreferrer';
+        visit.setAttribute('aria-label', value.company + ' ' + value.title + ' 원문 보기 (새 창)');
+      }
+      bottom.append(deadline, visit);
+      item.append(top, make('h2', '', value.title), meta, tags, bottom);
+      return item;
+    }
+    function render() {
+      const now = clock();
+      const filtered = selectJobs(jobs, {query:get('search').value, tier:get('tier').value, category:get('category').value, sort}, now);
+      get('results').replaceChildren(...filtered.map(value => card(value, now)));
+      get('result-count').textContent = '공고 ' + filtered.length + '개' + (filtered.length !== jobs.length ? ' / 전체 ' + jobs.length + '개' : '');
+      get('empty').hidden = filtered.length > 0;
+      get('error').hidden = true;
+      get('sort-score').setAttribute('aria-pressed', String(sort === 'score'));
+      get('sort-deadline').setAttribute('aria-pressed', String(sort === 'deadline'));
+    }
+    get('search').addEventListener('input', render);
+    get('tier').addEventListener('change', render);
+    get('category').addEventListener('change', render);
+    for (const mode of ['score', 'deadline']) get('sort-' + mode).addEventListener('click', () => {sort = mode; render();});
+    get('reset').addEventListener('click', () => {
+      get('search').value = '';
+      get('tier').value = '';
+      get('category').value = '';
+      sort = 'score';
+      render();
+    });
+    render();
+    return {render};
+  }
+  const api = {deadlineInfo, safeURL, normalizeJobs, readJobs, selectJobs, mount};
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+  if (typeof document !== 'undefined') mount(document);
+})();
+</script>
+</body>
+</html>
